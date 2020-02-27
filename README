@@ -1,0 +1,78 @@
+Duta Viorel-Ionut, 321CB
+
+	Pentru implementarea acestei teme a trebuit sa decriptez sase propozitii
+folosind sase metode diferite. Cunoscand metoda folosita pentru a cripta o
+anumita propozitie, a trebuit sa implementez algoritmul pentru decriptare in
+assembly.
+
+	Task 1:  XOR intre doua siruri de octeti
+	Prima data am implementat o functie care imi gaseste inceputul cheii. Avand
+in registrul ebx stringul si cheia, incremetez ebx pana cand gasesc '/0'. Dupa
+ce am gasit valoarea 0, incremetez iar regirstul ebx si opresc functia. In 
+registrul ebx, dupa ce am gasit valoarea 0 si am incrementat registrul, o sa am
+inceputul cheii.
+	Dupa ce am gasit cheia, am apelat functia de decriptare. In registrul ecx 
+am adresa stringului, iar in ebx adresa cheii; parcurgandu-le simultan, facand
+xor intre valori si introducand la loc in ecx, am decriptat stringul. Dupa 
+decodarea mesajului, in regristul ecx am propozitia originala (m-am folosit de
+registrul edx pentru parcurgerea stringului).
+
+	Task 2: Rolling XOR
+	Pentru rezolvarea taskului numarul 2, am apelat functia de decriptare. In 
+implementarea acesteia tin cont ca am nevoie de valoarea pe care am decriptat-o
+anterior(este o valoarea criptata) pentru a intoarce algoritmul de criptare.
+Tinand cont de aceste lucruri, a trebuit sa tin cont ca primul element din
+string este deja decriptat.
+
+	Task 3: XOR intre doua siruri reprezentate prin caractere hexazecimale
+	Ca sa rezolv acest task m-am folosit de functiile de la taskul 1 si de o
+functie de transformare din hexazecimal in binar. Prima data am apelat functia
+get_key pentru a gasi cheia. Urmatorul lucru necesar a fost sa tarnsform din
+hexazecimal in binar, atat stringul, cat si cheia. Pentru a face transformarea
+trebuie sa verific daca am citit o litera(scad caracterul 'a' si apun 10) sau 
+o cifra(scad caracterul '0'). Tinand cont ca pentru fiecare doi octeti din hexa
+o sa am unul singur in binar, trebuie sa citesc cate doua caractere( le citesc
+pe rand si folosesc un registru sa verific daca dupa ce apun la ah, al trebuie
+sa introduc octetul ah). Dupa ce am obtinut stringul si cheia in binar, apelez
+functia folosita si la subpunctul 1 si decodez mesajul.
+
+	Task 4: Decodificarea unui sir în reprezentare base32
+	Pentru rezolvarea acestul task apelez doar functia base32decode. La 8 octeti
+cititi din stringul initial, trebuie sa introduc 5 octeti decriptati. La inceput
+verific daca am citit '=' si in caz afirmativ, sar la labelul de padding unde
+introduc zerouri in registrul ebx sau ah (in functie de cate argumente valide am
+citit pana atunci) pana am ajuns la sfarsitul stringului. Daca caracterul citit
+nu a fost '=', verific daca e litera sau numar, pentru a sti ce valoare sa scad
+ca sa obtin numere de la 0 la 31. Primii 4 octeti ii stochez in ebx, facand shl
+pentru a putea aduna urmatorul numar. Dupa ce am adaugat si ultimii 2 biti, 
+trebuie sa inversez numarul folosind ror, eu introducand caracterele invers in
+ebx. Pentru ultimul octet, memorez primii 3 biti de la ultimul caracter convertit
+in ah si, alaturi de ce am citit in ultima iteratie, formez ultimul octet.
+
+	Task 5: Bruteforce pe XOR cu cheie de un octet
+	Primul pas in rezolvarea acestui subpunct este gasirea cheii, iar pentru a
+face acest lucru, apelez o functie care imi parcurge singrul, ia un byte, face
+xor intre acel caracter si litera 'f', iar apoi verifica daca in continuare am
+secventa 'orce'. In cazul in care un caracter nu corespunde, ma opresc reiau 
+cautarea cheii. Ma folosesc de registrul edx pentru parcurgerea stringului, iar
+cand se intrerupe cautarea, resetez registrul. Daca cautarea nu a fost 
+intrerupta si am ajuns la final, inseamna ca am gasit cheia corecta si pot sa
+ma opresc din cautat.
+	In fcuntia propriu-zisa de decriptat, parcurg registrul ecx in care am 
+stringul, fac xor cu bl (cheia o pastrez in bl) si introduc la loc in ecx pentru
+a memora propozitia decriptata.
+	Am scris o functie de gasire a cheii fara sa folosesc hintul. In aceasta 
+functie ma duc la finalul strigului si fac xor cu '?' pentru a obtine cheia.
+Prima data am implementat aceasta functie pentru ca am presupus ca la sfarsitul
+propozitiei o sa am un semn de punctuatie. Am verificat pe rand semnele de 
+punctuatie si am vazut ca pentru '?' imi afiseaza un mesaj coerent. Am tinut sa
+implementez si functia care foloseste hintul pentru a nu risca o depunctare.
+
+	Task 6:
+	Si in rezolvarea acestui task a trebuit sa apelez functia ce imi resturneaza
+adresa cheii (de la taskul 1), dar de data aceasta, cheia si stringul nu mai au 
+aceeasi lungime. Pentru a decripta mesajul, a trebuit sa verific caracterul 
+curent din cheie, sa scad caracterul 'a' si sa dupa sa scad din byte-ul luat din
+string valoarea obtinuta. Daca nu am citit un caracter ce trebuie decriptat, nu
+am modificat caracterul si nici nu am trecut la urmatorul byte din cheie. Cand
+am ajuns la sfarsitul cheii si inca mai am caractere de decriptat, o resetez.
